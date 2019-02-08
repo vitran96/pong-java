@@ -1,7 +1,5 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -12,14 +10,12 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import java.awt.*;
-
 public class Main extends Application {
-    Pane root;
-    Rectangle player, bot;
-    Circle ball;
-    Line line;
-    AnimationTimer timer;
+    private Pane root;
+    private Rectangle player, bot;
+    private Circle ball;
+    private Line line;
+    private AnimationTimer timer;
     private final int W = 1000, H = 400;
     private int speedX = 3, speedY = 3, dv = speedX, dy = speedY;
 
@@ -60,9 +56,13 @@ public class Main extends Application {
         root.getChildren().addAll(line, bot, player, ball);
 
         timer = new AnimationTimer() {
+            private long lastUpdate = 0;
             @Override
             public void handle(long now) {
-                gameUpdate();
+                if (now - lastUpdate >= 20_000_000) {
+                    gameUpdate();
+                    lastUpdate = now;
+                }
             }
         };
 
@@ -76,7 +76,7 @@ public class Main extends Application {
 
         if (x <= 10 && y > bot.getLayoutY() && y < bot.getLayoutY() + 80) dv = speedX;
         if (x >= W - 12.5 && y > player.getLayoutY() && y < player.getLayoutY() + 80) {
-            //speedX++;
+            speedX++;
             dv = -speedX;
         }
         if (y <= 0) dy = speedY;
@@ -85,8 +85,9 @@ public class Main extends Application {
         ball.setLayoutX(ball.getLayoutX() + dv);
         ball.setLayoutY(ball.getLayoutY() + dy);
 
-        if (x < W/2 && bot.getLayoutY() > y) bot.setLayoutY(bot.getLayoutY() - 5);
-        if (x < W/2 && bot.getLayoutY() + 80 < y) bot.setLayoutY(bot.getLayoutY() + 5);
+        // BOT in test
+//        if (x < W/2 && bot.getLayoutY() > y) bot.setLayoutY(bot.getLayoutY() - 5);
+//        if (x < W/2 && bot.getLayoutY() + 80 < y) bot.setLayoutY(bot.getLayoutY() + 5);
 
     }
 
