@@ -11,16 +11,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    private Pane root;
     private Rectangle player, bot;
     private Circle ball;
-    private Line line;
-    private AnimationTimer timer;
     private final int W = 1000, H = 400;
     private int speedX = 3, speedY = 3, dv = speedX, dy = speedY;
+    private boolean stop = false;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         primaryStage.setTitle("Pong Game");
         primaryStage.setScene(new Scene(createContent()));
         primaryStage.show();
@@ -28,16 +26,20 @@ public class Main extends Application {
         primaryStage.getScene().setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.UP) player.setLayoutY(player.getLayoutY() - 30);
             if (e.getCode() == KeyCode.DOWN) player.setLayoutY(player.getLayoutY() + 30);
+            if (e.getCode() == KeyCode.W) bot.setLayoutY(bot.getLayoutY() - 30);
+            if (e.getCode() == KeyCode.S) bot.setLayoutY(bot.getLayoutY() + 30);
+            if (e.getCode() == KeyCode.SPACE)
+                stop = !stop;
         });
 
     }
 
     private Parent createContent() {
-        root = new Pane();
+        Pane root = new Pane();
         root.setPrefSize(W, H);
         root.setStyle("-fx-background-color: black");
 
-        line = new Line(W/2, 0, W/2, H);
+        Line line = new Line(W / 2, 0, W / 2, H);
         line.setStroke(Color.WHITE);
 
         bot = new Rectangle(10, 80, Color.WHITE);
@@ -55,11 +57,12 @@ public class Main extends Application {
 
         root.getChildren().addAll(line, bot, player, ball);
 
-        timer = new AnimationTimer() {
+        AnimationTimer timer = new AnimationTimer() {
             private long lastUpdate = 0;
+
             @Override
             public void handle(long now) {
-                if (now - lastUpdate >= 20_000_000) {
+                if (now - lastUpdate >= 10_000_000 && !stop) {
                     gameUpdate();
                     lastUpdate = now;
                 }
