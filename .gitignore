@@ -42,3 +42,5 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 log/
+
+Main2.java
