@@ -19,6 +19,8 @@ public class Main extends Application {
     // Ball
     private Circle ball;
 
+    // Scores
+    private Text score1 , score2;
     // Window size
     private final int W = 1000, H = 400;
 
@@ -55,6 +57,7 @@ public class Main extends Application {
 
     }
 
+    // Set up and start game
     private Parent createContent() {
         Pane root = new Pane();
         root.setPrefSize(W, H);
@@ -80,9 +83,22 @@ public class Main extends Application {
         ball.setLayoutY(H/2);
 
         // Set player 1 score
-        // Code
+        score1 = new Text("0");
+        score1.setLayoutX(W/2 - 50);
+        score1.setLayoutY(40);
+        score1.setScaleX(5);
+        score1.setScaleY(5);
+        score1.setFill(Color.WHITE);
 
-        root.getChildren().addAll(line, player1, player2, ball);
+        // Set player 2 score
+        score2 = new Text("0");
+        score2.setLayoutX(W/2 + 45);
+        score2.setLayoutY(40);
+        score2.setScaleX(5);
+        score2.setScaleY(5);
+        score2.setFill(Color.WHITE);
+
+        root.getChildren().addAll(line, player1, player2, ball, score1, score2);
         System.out.println(player2.getLayoutX());
 
         AnimationTimer timer = new AnimationTimer() {
