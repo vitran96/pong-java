@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -22,7 +23,7 @@ public class Main extends Application {
     private final int W = 1000, H = 400;
 
     // Ball's speed and direction in 2D
-    private int speedX = 3, speedY = 3, dv = speedX, dy = speedY;
+    private int speed = 3, dx = speed, dy = speed;
 
     // Stop
     private boolean stop = false;
@@ -64,12 +65,12 @@ public class Main extends Application {
 
         // Set player 1 on the left
         player1 = new Rectangle(10, 80, Color.WHITE);
-        player1.setLayoutX(0);
+        player1.setLayoutX(10);
         player1.setLayoutY(H/2 - 40);
 
         // Set player 2 on the right
         player2 = new Rectangle(10, 80, Color.WHITE);
-        player2.setLayoutX(W - 10);
+        player2.setLayoutX(W - 20);
         player2.setLayoutY(H/2 - 40);
 
         // Set ball in the middle
@@ -78,7 +79,11 @@ public class Main extends Application {
         ball.setLayoutX(W/2);
         ball.setLayoutY(H/2);
 
+        // Set player 1 score
+        // Code
+
         root.getChildren().addAll(line, player1, player2, ball);
+        System.out.println(player2.getLayoutX());
 
         AnimationTimer timer = new AnimationTimer() {
             private long lastUpdate = 0;
@@ -98,30 +103,29 @@ public class Main extends Application {
     }
 
     private void gameUpdate() {
-        double x = ball.getLayoutX(),  y = ball.getLayoutY();
+        double x = ball.getLayoutX(),  y = ball.getLayoutY(),
+                p1Y = player1.getLayoutY(), p2Y = player2.getLayoutY();
 
-        if (x <= 10 && y > player1.getLayoutY() && y < player1.getLayoutY() + 80) dv = speedX;
-        if (x >= W - 12.5 && y > player2.getLayoutY() && y < player2.getLayoutY() + 80) {
-            speedX++;
-            dv = -speedX;
-        }
-        if (y <= 0) dy = speedY;
-        if (y >= H) dy = -speedY;
+        // Check X pos
+        if (x <= 20 && x >= 19 && y > p1Y && y < p1Y + 80 ||
+                x >= W - 30 && x <= W - 29 && y > p2Y && y < p2Y + 80 ||
+                x <= 5 ||
+                x >= W - 5)
+            dx = -dx;
 
-        ball.setLayoutX(ball.getLayoutX() + dv);
-        ball.setLayoutY(ball.getLayoutY() + dy);
+        // Check Y pos
+        if (y <= 5 || y >= H - 5)
+            dy = -dy;
 
-        // player1 in test
-//        if (x < W/2 && player1.getLayoutY() > y) player1.setLayoutY(player1.getLayoutY() - 5);
-//        if (x < W/2 && player1.getLayoutY() + 80 < y) player1.setLayoutY(player1.getLayoutY() + 5);
-
+        ball.setLayoutX(x + dx);
+        ball.setLayoutY(y + dy);
     }
 
     private void stopGame() {
         stop = !stop;
     }
 
-    public static void main (String args[]) {
+    public static void main (String[] args) {
         launch(args);
     }
 }
