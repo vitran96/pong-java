@@ -20,7 +20,8 @@ public class Main extends Application {
     private Circle ball;
 
     // Scores
-    private Text score1 , score2;
+    private Text scoreField1, scoreField2;
+    private int score1, score2;
     // Window size
     private final int W = 1000, H = 400;
 
@@ -78,27 +79,25 @@ public class Main extends Application {
 
         // Set ball in the middle
         ball = new Circle(5);
-        ball.setFill(Color.WHITE);
-        ball.setLayoutX(W/2);
-        ball.setLayoutY(H/2);
+        resetBall();
 
         // Set player 1 score
-        score1 = new Text("0");
-        score1.setLayoutX(W/2 - 50);
-        score1.setLayoutY(40);
-        score1.setScaleX(5);
-        score1.setScaleY(5);
-        score1.setFill(Color.WHITE);
+        scoreField1 = new Text(String.valueOf(score1));
+        scoreField1.setLayoutX(W/2 - 50);
+        scoreField1.setLayoutY(40);
+        scoreField1.setScaleX(5);
+        scoreField1.setScaleY(5);
+        scoreField1.setFill(Color.WHITE);
 
         // Set player 2 score
-        score2 = new Text("0");
-        score2.setLayoutX(W/2 + 45);
-        score2.setLayoutY(40);
-        score2.setScaleX(5);
-        score2.setScaleY(5);
-        score2.setFill(Color.WHITE);
+        scoreField2 = new Text(String.valueOf(score2));
+        scoreField2.setLayoutX(W/2 + 45);
+        scoreField2.setLayoutY(40);
+        scoreField2.setScaleX(5);
+        scoreField2.setScaleY(5);
+        scoreField2.setFill(Color.WHITE);
 
-        root.getChildren().addAll(line, player1, player2, ball, score1, score2);
+        root.getChildren().addAll(line, player1, player2, ball, scoreField1, scoreField2);
         System.out.println(player2.getLayoutX());
 
         AnimationTimer timer = new AnimationTimer() {
@@ -122,19 +121,46 @@ public class Main extends Application {
         double x = ball.getLayoutX(),  y = ball.getLayoutY(),
                 p1Y = player1.getLayoutY(), p2Y = player2.getLayoutY();
 
+        if (x <= 5) {
+            score2++;
+            scoreField2.setText(String.valueOf(score2));
+            nextGame();
+            return;
+        } else if (x >= W - 5) {
+            score1++;
+            scoreField1.setText(String.valueOf(score1));
+            nextGame();
+            return;
+        }
+
         // Check X pos
-        if (x <= 20 && x >= 19 && y > p1Y && y < p1Y + 80 ||
-                x >= W - 30 && x <= W - 29 && y > p2Y && y < p2Y + 80 ||
-                x <= 5 ||
-                x >= W - 5)
+        final boolean changeXDirection = x <= 20 && x >= 19 && y > p1Y && y < p1Y + 80 ||
+            x >= W - 30 && x <= W - 29 && y > p2Y && y < p2Y + 80;
+        if (changeXDirection)
             dx = -dx;
 
         // Check Y pos
-        if (y <= 5 || y >= H - 5)
+        final boolean changeYDirection = y <= 5 || y >= H - 5;
+        if (changeYDirection)
             dy = -dy;
 
         ball.setLayoutX(x + dx);
         ball.setLayoutY(y + dy);
+    }
+
+    private void nextGame() {
+        resetBall();
+        resetDirection();
+    }
+
+    private void resetBall() {
+        ball.setFill(Color.WHITE);
+        ball.setLayoutX(W/2);
+        ball.setLayoutY(H/2);
+    }
+
+    private void resetDirection() {
+        dx = dy = speed;
     }
 
     private void stopGame() {
